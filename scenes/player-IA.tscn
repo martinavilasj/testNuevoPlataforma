@@ -1,0 +1,139 @@
+[gd_scene load_steps=10 format=3 uid="uid://cqighla4w22me"]
+
+[ext_resource type="Script" path="res://scripts/player-IA.gd" id="1_ysyci"]
+[ext_resource type="Texture2D" uid="uid://c5mxcrrejf2va" path="res://assets/player-all.png" id="2_g835w"]
+
+[sub_resource type="Animation" id="Animation_pmht6"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("player_sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_hrlq5"]
+resource_name = "idle"
+length = 0.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("player_sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4]
+}
+
+[sub_resource type="Animation" id="Animation_xnmdk"]
+resource_name = "jump"
+length = 1.2
+loop_mode = 1
+step = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("player_sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [16, 17, 18]
+}
+
+[sub_resource type="Animation" id="Animation_5kbng"]
+resource_name = "run"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("player_sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [8, 9, 10, 11, 12, 13, 14, 15]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_e0gia"]
+_data = {
+"RESET": SubResource("Animation_pmht6"),
+"idle": SubResource("Animation_hrlq5"),
+"jump": SubResource("Animation_xnmdk"),
+"run": SubResource("Animation_5kbng")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_csj5e"]
+size = Vector2(20, 39)
+
+[sub_resource type="LabelSettings" id="LabelSettings_by0pa"]
+font_size = 14
+font_color = Color(0, 0, 0, 1)
+
+[node name="player-IA" type="CharacterBody2D" groups=["player_ia"]]
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("1_ysyci")
+
+[node name="player_sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_g835w")
+hframes = 8
+vframes = 3
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_e0gia")
+}
+speed_scale = 1.085
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_csj5e")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -20.0
+offset_top = -41.0
+offset_right = 20.0
+offset_bottom = -21.0
+text = "IA"
+label_settings = SubResource("LabelSettings_by0pa")
+horizontal_alignment = 1
+
+[node name="right_sensor" type="RayCast2D" parent="."]
+position = Vector2(12, 18)
+target_position = Vector2(0, 20)
+collide_with_areas = true
+
+[node name="left_sensor" type="RayCast2D" parent="."]
+position = Vector2(-13, 18)
+target_position = Vector2(0, 20)
+
+[node name="right_h_sensor" type="RayCast2D" parent="."]
+target_position = Vector2(15, 0)
+hit_from_inside = true
+collide_with_areas = true
+
+[node name="left_h_sensor" type="RayCast2D" parent="."]
+rotation = 3.14159
+target_position = Vector2(15, 0)
+hit_from_inside = true
+collide_with_areas = true
+
+[node name="up_sensor" type="RayCast2D" parent="."]
+target_position = Vector2(0, -25)
+hit_from_inside = true
